@@ -49,10 +49,19 @@ function Rect(init_pos, init_size)
   obj.y = function() { return y; }
   obj.w = function() { return w; }
   obj.h = function() { return h; }
+  obj.endx = function() { return x+w; }
+  obj.endy = function() { return y+h; }
   obj.pos = function() { return new V2(x, y); }
+  obj.endpos = function() { return new V2(x+w, y+h); }
   obj.size = function() { return new V2(w, h); }
   
   // query
+  obj.getOverlap = function(other)
+  {
+    var overlap = new V2(w - other.w(), h - other.h());
+    return overlap;
+  }
+  
   obj.containsXY = function(px, py)
   {
     return (px >= x && py >= y && px <= x+w && py <= y+h);
@@ -163,6 +172,16 @@ function Rect(init_pos, init_size)
   {
     w *= amount;
     h *= amount;
+    return obj;
+  }
+  obj.addW = function(amount)
+  {
+    obj.setWH(w + amount, h);
+    return obj;
+  }
+  obj.addH = function(amount)
+  {
+    obj.setWH(w, h + amount);
     return obj;
   }
   

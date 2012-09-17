@@ -50,6 +50,13 @@ function MainMenu() // extends AppState
     // clear canvas
     context.fillStyle = "rgb(200, 50, 100)";
     context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // draw text
+    context.font = "48pt monospace";
+    context.textAlign = "center";
+    context.textBaseline = "Middle";
+    context.fillStyle = "rgb(0, 0, 0)";
+    context.fillText("Click to start", canvas.width*0.5, canvas.height*0.5);
   }
   
   // handle mouse-button events

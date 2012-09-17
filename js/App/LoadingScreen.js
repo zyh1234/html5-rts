@@ -50,6 +50,8 @@ function LoadingScreen() // extends AppState
   // display a graphic while loading
   obj.draw = function()
   {
+    console.log("wtf");
+    
     // clear canvas
     context.fillStyle = "rgb(100, 50, 200)";
     context.fillRect(0, 0, canvas.width, canvas.height);

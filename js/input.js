@@ -107,9 +107,11 @@ canvas.onselect = function () { return false; }		// don't select text
 canvas.onmousedown = function(event)
 {
   // refocus if out of foucs
-  canvas.focus = true;
+  if(!canvas.focus)
+    canvas.focus = true;
   // pass event to App
-  App.getInstance().mousebutton_event(event.which-1, true);
+  else
+    App.getInstance().mousebutton_event(event.which-1, true);
   // reset position
   mouse.pos.setXY(event.pageX - canvas.offset.x, event.pageY - canvas.offset.y);
   // reset button state
@@ -183,7 +185,6 @@ window.onkeyup = function(event)
 
 document.onmousedown = function(e) 
 { 
-  console.log("DOC TOUCH");
   // draw black mask
   context.fillStyle = "rgba(0, 0, 0, 0.5)";
   context.fillRect(0, 0, canvas.width, canvas.height);

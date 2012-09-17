@@ -44,12 +44,14 @@ function Map(size)
   // receiver 
   var obj = this, typ = Map;
   
-  // 
-  var grid = new Array(size.y());
-  for(var row = 0; row < size.y(); row++)
+  // create the grid
+  var n_cels = size.scalecpy(typ.TILE_INV_SIZE).floor();
+  
+  var grid = new Array(n_cels.y());
+  for(var row = 0; row < n_cels.y(); row++)
   {
-    grid[row] = new Array(size.x());
-    for(var col = 0; col < size.y(); col++)
+    grid[row] = new Array(n_cels.x());
+    for(var col = 0; col < n_cels.x(); col++)
       grid[row][col] = { tile: rand_amongst( [typ.GROUND, typ.WATER ] ), 
 			 unit: typ.NO_UNIT, selected : false };
   }
@@ -57,6 +59,21 @@ function Map(size)
   /* SUBROUTINES 
   var f = function(p1, ... ) { } 
   */
+  
+  var drawGrid = function(row, col, view)
+  {
+    const zoom = view.getZoom().getBalance();
+    var cell = grid[row][col];
+    
+    // draw tile -- setup context
+    context.fillStyle = (cell.tile == typ.GROUND) 
+			  ? "rgb(50, 255, 50)" 
+			  : "rgb(50, 50, 255)";
+    // draw tile
+    var pos = view.globalToLocal(new V2(col*typ.TILE_SIZE, row*typ.TILE_SIZE));
+    context.fillRect(pos.x() - 1, pos.y() - 1, 
+		      zoom*typ.TILE_SIZE + 1, zoom*typ.TILE_SIZE + 1);
+  }
     
   /* METHODS 
   (obj.f = function(p1, ... ) { }
@@ -87,45 +104,23 @@ function Map(size)
   // update
   obj.draw = function(view)
   {
-    const area = view.getArea(), zoom = view.getZoom().getBalance(),
+    var fov = view.getField(), zoom = view.getZoom().getBalance(),
 	  min = { 
-		  row : Math.max(0, Math.floor(area.y()*Map.TILE_INV_SIZE)), 
-		  col : Math.max(0, Math.floor(area.x()*Map.TILE_INV_SIZE)) 
+		  row : Math.max(0, Math.floor(fov.y()*Map.TILE_INV_SIZE)), 
+		  col : Math.max(0, Math.floor(fov.x()*Map.TILE_INV_SIZE)) 
 		},
 	  max = { 
 		  row : Math.min(grid.length, 
-			  Math.ceil(min.row + area.h()*Map.TILE_INV_SIZE) + 1), 
+			  Math.ceil(min.row + fov.h()*Map.TILE_INV_SIZE) + 1), 
 		  col : Math.min(grid[0].length, 
-			  Math.ceil(min.col + area.w()*Map.TILE_INV_SIZE) + 1)
+			  Math.ceil(min.col + fov.w()*Map.TILE_INV_SIZE) + 1)
 		 };
     
     for(var row = Math.max(0, min.row); 
 	row < Math.min(grid.length, max.row); row++)
     for(var col = Math.max(0, min.col); 
 	col < Math.min(grid[row].length, max.col); col++)
-    {
-      var cell = grid[row][col];
-      // draw tile -- setup context
-      context.fillStyle = (cell.tile == typ.GROUND) 
-			    ? "rgb(50, 255, 50)" 
-			    : "rgb(50, 50, 255)";
-      context.lineWidth = (cell.selected) ? 5 : 1;
-      // draw tile
-      var pos = view.globalToLocal(new V2(col*typ.TILE_SIZE, row*typ.TILE_SIZE));
-      context.fillRect(pos.x(), pos.y(), 
-		       zoom*typ.TILE_SIZE, zoom*typ.TILE_SIZE);
-      context.strokeRect(pos.x(), pos.y(), 
-			 zoom*typ.TILE_SIZE, zoom*typ.TILE_SIZE);		    
-			    
-      // draw debug text
-      pos.addXY(typ.TILE_HALF_SIZE*zoom, typ.TILE_HALF_SIZE*zoom);
-      var text_size = Math.max(Math.min(zoom*8, 16), 4);
-      context.font = text_size + "pt monospace";
-
-      context.textAlign = "center";
-      context.fillStyle = "rgb(0,0,0)";
-      context.fillText(col+","+row, pos.x(), pos.y());
-    }    
+	  drawGrid(row, col, view);  
   }
   
   /* INITIALISE AND RETURN INSTANCE */

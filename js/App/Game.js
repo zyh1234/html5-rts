@@ -33,8 +33,9 @@ function Game() // extends AppState
   var obj = this, typ = Game;
   
   // real attributes
-  var view = new Viewport(new V2(canvas.width, canvas.height)),
-      map = new Map(new V2(20, 30));
+  var boundary_size = new V2(960, 960),
+      view = new View(new V2(canvas.width, canvas.height), boundary_size),
+      map = new Map(boundary_size);
   
   /* METHODS 
     (obj.f = function(p1, ... ) { }
@@ -56,14 +57,12 @@ function Game() // extends AppState
     
     // draw the contents of the Map
     map.draw(view);
-    
-    view.draw();
   }
   
   // pass mouse-scroll on to the viewport
   obj.wheel_event = function(delta)
   {
-    view.zoom(delta * 0.1);
+    view.addZoom(delta * 0.1);
   }
   
   // treat mousebutton input
