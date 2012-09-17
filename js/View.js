@@ -38,7 +38,7 @@ function View(size, boundary_size)
   var field = new Rect(V2.ORIGIN, size),
       boundary = new Rect(V2.ORIGIN, boundary_size),
       zoom = new Bank(1.0, 2.0, Math.min(canvas.width/boundary.w(), 
-					 canvas.height/boundary.h()));
+					 canvas.height/boundary.h())+0.0001);
   
   /* SUBROUTINES 
   var f = function(p1, ... ) { } 
@@ -51,20 +51,15 @@ function View(size, boundary_size)
     // pan view to keep within borders
     
     // pan view to keep within borders -- left/right
+    console.log(overlap.x());
     if(overlap.x() < 0)
     {
       // left
       if(field.x() < boundary.x())
-      {
-	console.log("left -- reset field.x()");
 	field.setX(boundary.x());
-      }
       // right
       else if(field.endx() > boundary.endx())
-      {
-	console.log("right -- reset field.x()");
 	field.setX(boundary.endx()-field.w());
-      }
     }
     else if(overlap.x() > 0)
       field.setX(boundary.x() - overlap.x()*0.5);
@@ -79,7 +74,7 @@ function View(size, boundary_size)
       else if(field.endy() > boundary.endy())
 	field.setY(boundary.endy()-field.h());
     }
-    else if(overlap.x() > 0)
+    else if(overlap.y() > 0)
       field.setY(boundary.y() - overlap.y()*0.5);
   }
   

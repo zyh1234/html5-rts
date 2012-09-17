@@ -33,7 +33,7 @@ function Game() // extends AppState
   var obj = this, typ = Game;
   
   // real attributes
-  var boundary_size = new V2(960, 960),
+  var boundary_size = new V2(1920, 960),
       view = new View(new V2(canvas.width, canvas.height), boundary_size),
       map = new Map(boundary_size);
   
